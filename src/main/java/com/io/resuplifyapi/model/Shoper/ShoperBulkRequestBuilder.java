@@ -1,11 +1,11 @@
-package com.io.resuplifyapi.repository;
+package com.io.resuplifyapi.model.Shoper;
 
 import com.io.resuplifyapi.model.Shoper.ShoperProductsRequest;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BulkProductsRequestBuilder {
+public class ShoperBulkRequestBuilder {
 
     private List<List<ShoperProductsRequest>> bulkRequestsList;
     private final int productsPerRequestLimit = 50;
@@ -13,10 +13,10 @@ public class BulkProductsRequestBuilder {
     private int requestsNumber;
     private int bulkRequestsNumber;
 
-    public List<List<ShoperProductsRequest>> prepare(int totalProductsNumber) {
+    public List<List<ShoperProductsRequest>> prepareProductsRequests(int totalProductsNumber) {
         calculateRequestsNumber(totalProductsNumber);
         calculateBulkRequestsNumber();
-        prepareBulkRequestsList();
+        prepareBulkRequests();
         return bulkRequestsList;
     }
 
@@ -28,7 +28,7 @@ public class BulkProductsRequestBuilder {
         bulkRequestsNumber = (int) Math.ceil((double) requestsNumber / requestsPerBulkRequestLimit);
     }
 
-    private void prepareBulkRequestsList() {
+    private void prepareBulkRequests() {
         int pageStart = 1;
         int pageStop = 0;
 

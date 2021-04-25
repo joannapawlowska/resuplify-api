@@ -8,7 +8,7 @@ import javax.persistence.*;
 public class ShopOwner {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="id")
     private int id;
 
@@ -18,7 +18,7 @@ public class ShopOwner {
     @Column(name="password")
     private String password;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name="shop_id")
     private Shop shop;
 

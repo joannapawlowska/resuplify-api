@@ -1,5 +1,7 @@
 package com.io.resuplifyapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -8,7 +10,7 @@ import java.time.LocalDate;
 public class Stock {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="id")
     private int id;
 
@@ -18,15 +20,17 @@ public class Stock {
     @Column(name="stock")
     private int stock;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JsonIgnore
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="product_id")
     private Product product;
 
     public Stock(){}
 
-    public Stock(LocalDate date, int stock) {
+    public Stock(LocalDate date, int stock, Product product) {
         this.date = date;
         this.stock = stock;
+        this.product = product;
     }
 
     public int getId() {

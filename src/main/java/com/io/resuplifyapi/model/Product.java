@@ -1,7 +1,10 @@
 package com.io.resuplifyapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -9,7 +12,7 @@ import java.util.List;
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="id")
     private int id;
 
@@ -25,18 +28,31 @@ public class Product {
     @Column(name="out_of_stock_date")
     private LocalTime outOfStockDate;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade={CascadeType.PERSIST, CascadeType.MERGE,CascadeType.DETACH, CascadeType.REFRESH})
+    @Column(name="warn_level")
+    private int warnLevel;
+
+    @JsonIgnore
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="shop_id")
     private Shop shop;
 
-    @OneToMany(mappedBy = "product", cascade=CascadeType.ALL)
+    @OneToMany(mappedBy="product", cascade=CascadeType.ALL, orphanRemoval=true)
     private List<Stock> stocks;
 
     public Product() {}
 
-    public Product(String name, int shoperId) {
+    public Product(String name, int shoperId, int warnLevel, Shop shop) {
         this.name = name;
         this.shoperId = shoperId;
+        this.warnLevel = warnLevel;
+        this.shop = shop;
+        this.stocks = new ArrayList<>();
+    }
+
+    public int getId() { return id; }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -71,6 +87,14 @@ public class Product {
         this.outOfStockDate = outOfStockDate;
     }
 
+    public int getWarnLevel() {
+        return warnLevel;
+    }
+
+    public void setWarnLevel(int warnLevel) {
+        this.warnLevel = warnLevel;
+    }
+
     public Shop getShop() {
         return shop;
     }
@@ -85,5 +109,9 @@ public class Product {
 
     public void setStocks(List<Stock> stocks) {
         this.stocks = stocks;
+    }
+
+    public void addStock(Stock stock){
+        stocks.add(stock);
     }
 }

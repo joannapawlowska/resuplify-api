@@ -10,7 +10,7 @@ import java.util.List;
 public class Shop {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="id")
     private int id;
 
@@ -26,7 +26,7 @@ public class Shop {
     @OneToOne(mappedBy="shop", cascade=CascadeType.ALL)
     private ShopOwner shopOwner;
 
-    @OneToMany(mappedBy="shop", cascade=CascadeType.ALL)
+    @OneToMany(mappedBy="shop", cascade=CascadeType.ALL, orphanRemoval=true)
     private List<Product> products;
 
     public Shop(){}
@@ -35,14 +35,23 @@ public class Shop {
         this.url = url;
         this.token = token;
         this.tokenRefreshDate = tokenRefreshDate;
+        this.products = new ArrayList<>();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getUrl() {
         return url;
     }
 
-    public void setUrl(String shopUrl) {
-        this.url = shopUrl;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getToken() {
@@ -61,11 +70,11 @@ public class Shop {
         this.tokenRefreshDate = tokenRefreshDate;
     }
 
-    public ShopOwner getUser() {
+    public ShopOwner getShopOwner() {
         return shopOwner;
     }
 
-    public void setUser(ShopOwner shopOwner) {
+    public void setShopOwner(ShopOwner shopOwner) {
         this.shopOwner = shopOwner;
     }
 
@@ -77,10 +86,5 @@ public class Shop {
         this.products = products;
     }
 
-    public void addProduct(Product product){
-        if(products == null){
-            products = new ArrayList<>();
-        }
-        products.add(product);
-    }
+    public void addProduct(Product product) { products.add(product);}
 }
