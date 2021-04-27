@@ -1,4 +1,4 @@
-package com.io.resuplifyapi.model;
+package com.io.resuplifyapi.domain;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -26,7 +26,8 @@ public class Shop {
     @OneToOne(mappedBy="shop", cascade=CascadeType.ALL)
     private ShopOwner shopOwner;
 
-    @OneToMany(mappedBy="shop", cascade=CascadeType.ALL, orphanRemoval=true)
+    @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
+    @JoinColumn(name="shop_id")
     private List<Product> products;
 
     public Shop(){}

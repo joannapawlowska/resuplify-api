@@ -1,6 +1,4 @@
-package com.io.resuplifyapi.model;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+package com.io.resuplifyapi.domain;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -20,17 +18,11 @@ public class Stock {
     @Column(name="stock")
     private int stock;
 
-    @JsonIgnore
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="product_id")
-    private Product product;
-
     public Stock(){}
 
-    public Stock(LocalDate date, int stock, Product product) {
+    public Stock(LocalDate date, int stock) {
         this.date = date;
         this.stock = stock;
-        this.product = product;
     }
 
     public int getId() {
@@ -55,13 +47,5 @@ public class Stock {
 
     public void setStock(int stock) {
         this.stock = stock;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
     }
 }

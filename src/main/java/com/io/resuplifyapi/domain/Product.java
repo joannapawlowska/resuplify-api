@@ -1,6 +1,4 @@
-package com.io.resuplifyapi.model;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+package com.io.resuplifyapi.domain;
 
 import javax.persistence.*;
 import java.time.LocalTime;
@@ -31,21 +29,16 @@ public class Product {
     @Column(name="warn_level")
     private int warnLevel;
 
-    @JsonIgnore
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="shop_id")
-    private Shop shop;
-
-    @OneToMany(mappedBy="product", cascade=CascadeType.ALL, orphanRemoval=true)
+    @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
+    @JoinColumn(name="product_id")
     private List<Stock> stocks;
 
     public Product() {}
 
-    public Product(String name, int shoperId, int warnLevel, Shop shop) {
+    public Product(String name, int shoperId, int warnLevel) {
         this.name = name;
         this.shoperId = shoperId;
         this.warnLevel = warnLevel;
-        this.shop = shop;
         this.stocks = new ArrayList<>();
     }
 
@@ -93,14 +86,6 @@ public class Product {
 
     public void setWarnLevel(int warnLevel) {
         this.warnLevel = warnLevel;
-    }
-
-    public Shop getShop() {
-        return shop;
-    }
-
-    public void setShop(Shop shop) {
-        this.shop = shop;
     }
 
     public List<Stock> getStocks() {
