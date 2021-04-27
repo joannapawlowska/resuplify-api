@@ -1,14 +1,21 @@
-package com.io.resuplifyapi.model.Shoper;
+package com.io.resuplifyapi.domain.externalAPI;
 
-public class ShoperProductsRequest extends ShoperRequest {
+public class ProductsRequest {
 
+    private String path = "/webapi/rest/products";
+    private String method = "GET";
     private Params params;
 
-    public ShoperProductsRequest(){super();}
-
-    public ShoperProductsRequest(String method, int page){
-        super("products", method);
+    public ProductsRequest(int page){
         params = new Params(page);
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getMethod() {
+        return method;
     }
 
     public Params getParams() {

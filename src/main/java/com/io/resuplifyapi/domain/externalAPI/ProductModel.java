@@ -1,11 +1,11 @@
-package com.io.resuplifyapi.model.Shoper;
+package com.io.resuplifyapi.domain.externalAPI;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonDeserialize(using = ShoperProductDeserializer.class)
-public class ShoperProduct {
+@JsonDeserialize(using = ProductModelDeserializer.class)
+public class ProductModel {
 
     private int id;
     private String name;
@@ -13,9 +13,9 @@ public class ShoperProduct {
     private boolean active;
     private int warnLevel;
 
-    public ShoperProduct() {}
+    public ProductModel() {}
 
-    public ShoperProduct(int id, String name, int stock, boolean active, int warnLevel) {
+    public ProductModel(int id, String name, int stock, boolean active, int warnLevel) {
         this.id = id;
         this.name = name;
         this.stock = stock;

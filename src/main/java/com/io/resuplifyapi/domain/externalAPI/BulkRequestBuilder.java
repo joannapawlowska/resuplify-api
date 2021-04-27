@@ -1,19 +1,17 @@
-package com.io.resuplifyapi.model.Shoper;
-
-import com.io.resuplifyapi.model.Shoper.ShoperProductsRequest;
+package com.io.resuplifyapi.domain.externalAPI;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShoperBulkRequestBuilder {
+public class BulkRequestBuilder {
 
-    private List<List<ShoperProductsRequest>> bulkRequestsList;
+    private List<List<ProductsRequest>> bulkRequestsList;
     private final int productsPerRequestLimit = 50;
     private final int requestsPerBulkRequestLimit = 25;
     private int requestsNumber;
     private int bulkRequestsNumber;
 
-    public List<List<ShoperProductsRequest>> prepareProductsRequests(int totalProductsNumber) {
+    public List<List<ProductsRequest>> prepareProductsRequests(int totalProductsNumber) {
         calculateRequestsNumber(totalProductsNumber);
         calculateBulkRequestsNumber();
         prepareBulkRequests();
@@ -51,12 +49,12 @@ public class ShoperBulkRequestBuilder {
         return i == bulkRequestsNumber;
     }
 
-    private List<ShoperProductsRequest> getProductsRequestsListForPages(int pageStart, int pageStop){
+    private List<ProductsRequest> getProductsRequestsListForPages(int pageStart, int pageStop){
 
-        List<ShoperProductsRequest> requestsList = new ArrayList<>();
+        List<ProductsRequest> requestsList = new ArrayList<>();
 
         for(int i = pageStart; i <= pageStop; i++){
-            requestsList.add(new ShoperProductsRequest("GET", i));
+            requestsList.add(new ProductsRequest(i));
         }
         return requestsList;
     }

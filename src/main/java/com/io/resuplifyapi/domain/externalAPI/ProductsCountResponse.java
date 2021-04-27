@@ -1,17 +1,13 @@
-package com.io.resuplifyapi.model.Shoper;
+package com.io.resuplifyapi.domain.externalAPI;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ShoperProductsCount {
+public class ProductsCountResponse {
 
     int count;
 
-    public ShoperProductsCount(){}
-
-    public ShoperProductsCount(int count) {
-        this.count = count;
-    }
+    public ProductsCountResponse(){}
 
     public int getCount() {
         return count;

@@ -1,25 +1,24 @@
-package com.io.resuplifyapi.model.Shoper;
+package com.io.resuplifyapi.domain.externalAPI;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
 
-public class ShoperProductDeserializer extends StdDeserializer<ShoperProduct> {
+public class ProductModelDeserializer extends StdDeserializer<ProductModel> {
 
-    public ShoperProductDeserializer() {
+    public ProductModelDeserializer() {
         this(null);
     }
 
-    protected ShoperProductDeserializer(Class<?> vc) {
+    protected ProductModelDeserializer(Class<?> vc) {
         super(vc);
     }
 
     @Override
-    public ShoperProduct deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+    public ProductModel deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
 
         final JsonNode jsonNode = jsonParser.getCodec().readTree(jsonParser);
 
@@ -31,7 +30,7 @@ public class ShoperProductDeserializer extends StdDeserializer<ShoperProduct> {
         final boolean active = parseActive(stockNode.get("active"));
         final int warnLevel = parseWarnLevel(stockNode.get("warn_level"));
 
-        return new ShoperProduct(id, name, stock, active, warnLevel);
+        return new ProductModel(id, name, stock, active, warnLevel);
     }
 
     private boolean parseActive(JsonNode activeNode){
