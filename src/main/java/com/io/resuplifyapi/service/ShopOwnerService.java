@@ -1,6 +1,6 @@
 package com.io.resuplifyapi.service;
 
-import com.io.resuplifyapi.model.ShopOwner;
+import com.io.resuplifyapi.domain.ShopOwner;
 import com.io.resuplifyapi.repository.ShopOwnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

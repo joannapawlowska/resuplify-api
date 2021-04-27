@@ -1,4 +1,4 @@
-package com.io.resuplifyapi.model;
+package com.io.resuplifyapi.domain;
 
 import javax.persistence.*;
 

@@ -1,6 +1,6 @@
 package com.io.resuplifyapi.service;
 
-import com.io.resuplifyapi.model.Product;
+import com.io.resuplifyapi.domain.Product;
 import com.io.resuplifyapi.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
