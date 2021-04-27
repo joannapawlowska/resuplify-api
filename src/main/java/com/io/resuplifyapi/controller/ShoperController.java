@@ -1,6 +1,6 @@
 package com.io.resuplifyapi.controller;
 
-import com.io.resuplifyapi.service.ScheduledShoperService;
+import com.io.resuplifyapi.service.ScheduledService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class ShoperController {
 
     @Autowired
-    ScheduledShoperService scheduledShoperService;
+    ScheduledService scheduledService;
 
-    @GetMapping("/shop/products")
-    public void getShoperProducts(){
-        scheduledShoperService.getProductsForEachShop();
+    @GetMapping("/update")
+    public void updateEachShopInventoryBalances(){
+       scheduledService.updateEachShopInventoryBalances();
     }
 }
