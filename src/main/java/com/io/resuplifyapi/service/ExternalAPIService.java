@@ -34,30 +34,30 @@ public class ExternalAPIService {
         this.url = url;
         this.token = token;
 
-        try{
+        try {
             requestForTotalProductsNumber();
             prepareBulkRequests();
             performBulkRequests();
 
-        }catch(WebClientResponseException e){
+        } catch (WebClientResponseException e) {
             throw new ExternalAPICallException(String.valueOf(e.getStatusCode()));
         }
 
         return productModels;
     }
 
-    private void requestForTotalProductsNumber() throws WebClientResponseException{
+    protected void requestForTotalProductsNumber() throws WebClientResponseException {
 
-            ProductsCountResponse productsCountResponse = webClientBuilder
-                    .build()
-                    .get()
-                    .uri("https://"+ url + "/webapi/rest/products/?page=1&limit=1")
-                    .headers(h -> h.setBearerAuth(token))
-                    .retrieve()
-                    .bodyToMono(ProductsCountResponse.class)
-                    .block();
+        ProductsCountResponse productsCountResponse = webClientBuilder
+                .build()
+                .get()
+                .uri("https://" + url + "/webapi/rest/products/?page=1&limit=1")
+                .headers(h -> h.setBearerAuth(token))
+                .retrieve()
+                .bodyToMono(ProductsCountResponse.class)
+                .block();
 
-            totalProductsNumber = productsCountResponse.getCount();
+        totalProductsNumber = productsCountResponse.getCount();
     }
 
     private void prepareBulkRequests() {
@@ -72,7 +72,7 @@ public class ExternalAPIService {
                 .collect(Collectors.toList());
     }
 
-    private Flux<ProductModel> requestForProducts(List<ProductsRequest> bulkRequest) throws WebClientResponseException{
+    private Flux<ProductModel> requestForProducts(List<ProductsRequest> bulkRequest) throws WebClientResponseException {
         return webClientBuilder
                 .build()
                 .post()
