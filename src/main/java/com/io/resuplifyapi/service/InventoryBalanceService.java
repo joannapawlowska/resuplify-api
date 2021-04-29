@@ -1,5 +1,6 @@
 package com.io.resuplifyapi.service;
 
+import com.io.resuplifyapi.domain.Prediction;
 import com.io.resuplifyapi.domain.Product;
 import com.io.resuplifyapi.domain.externalAPI.ProductModel;
 import com.io.resuplifyapi.domain.Stock;
@@ -40,12 +41,14 @@ public class InventoryBalanceService {
 
         Product product = new Product(adjustToMaxLength(model.getName()), model.getId(), model.getWarnLevel());
         Stock stock = new Stock(LocalDate.now(), model.getStock());
+        Prediction prediction = new Prediction(false);
 
+        product.setPrediction(prediction);
         product.addStock(stock);
         products.add(product);
     }
 
-    private  String adjustToMaxLength(String name){
+    private String adjustToMaxLength(String name){
         int nameLength = name.length();
         return name.substring(0, Math.min(nameLength, 255));
     }
