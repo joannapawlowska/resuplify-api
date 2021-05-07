@@ -2,6 +2,7 @@ package com.io.resuplifyapi.domain;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -87,5 +88,42 @@ public class Product {
 
     public void addStock(Stock stock){
         stocks.add(stock);
+    }
+
+    public static class Builder {
+
+        private int warnLevel;
+        private Prediction prediction;
+        private List<Stock> stocks;
+
+        public static Builder builder(){
+            return new Builder();
+        }
+
+        public Builder withWarnLevel(int warnLevel){
+            this.warnLevel = warnLevel;
+            return this;
+        }
+
+        public Builder withPrediction(Prediction prediction){
+            this.prediction = prediction;
+            return this;
+        }
+
+        public Builder withStocks(Stock ... stocks){
+            if(this.stocks == null){
+                this.stocks = new ArrayList<>();
+            }
+            this.stocks.addAll(Arrays.asList(stocks));
+            return this;
+        }
+
+        public Product build(){
+            Product p = new Product();
+            p.setWarnLevel(warnLevel);
+            p.setPrediction(prediction);
+            p.setStocks(stocks);
+            return p;
+        }
     }
 }
