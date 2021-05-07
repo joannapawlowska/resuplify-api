@@ -41,4 +41,17 @@ public class ScheduledService {
             logger.error("Unable to update data for shop with id {} : response {}", shop.getId(), e.getMessage());
         }
     }
+
+    public void updateEachShopProductsPrediction(){
+
+        List<Shop> shops = shopService.findAll();
+        for(Shop shop : shops){
+            updateProductsPrediction(shop);
+        }
+    }
+
+    private void updateProductsPrediction(Shop shop){
+        shopService.updatePredictions(shop);
+        shopService.save(shop);
+    }
 }

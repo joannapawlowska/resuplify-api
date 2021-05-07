@@ -16,13 +16,17 @@ public class Stock {
     private LocalDate date;
 
     @Column(name="stock")
-    private int stock;
+    private int level;
 
     public Stock(){}
 
-    public Stock(LocalDate date, int stock) {
+    public Stock(LocalDate date, int level) {
         this.date = date;
-        this.stock = stock;
+        this.level = level;
+    }
+
+    public Stock(int level) {
+        this.level = level;
     }
 
     public int getId() {
@@ -41,11 +45,11 @@ public class Stock {
         this.date = date;
     }
 
-    public int getStock() {
-        return stock;
+    public int getLevel() {
+        return level;
     }
 
-    public void setStock(int stock) {
-        this.stock = stock;
+    public void setLevel(int stock) {
+        this.level = stock;
     }
 }

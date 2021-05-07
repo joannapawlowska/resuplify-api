@@ -77,7 +77,7 @@ public class InventoryBalanceService {
                 .get();
 
         stock.setDate(LocalDate.now());
-        stock.setStock(stockLevel);
+        stock.setLevel(stockLevel);
     }
 
     private void addNewStock(Product product, int stockLevel) {

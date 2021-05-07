@@ -15,6 +15,9 @@ public class ProductService{
     @Autowired
     ProductRepository productRepository;
 
+    @Autowired
+    PredictorService predictorService;
+
     public void save(Product product){
         productRepository.save(product);
     }
@@ -26,4 +29,6 @@ public class ProductService{
     public Optional<Product> findById(int id){
         return productRepository.findById(id);
     }
+
+    public void updatePrediction(Product product) { predictorService.updatePrediction(product); }
 }

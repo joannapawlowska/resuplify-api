@@ -1,7 +1,6 @@
 package com.io.resuplifyapi.config;
 
 import com.io.resuplifyapi.domain.externalAPI.BulkRequestBuilder;
-import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -20,7 +19,4 @@ public class AppConfig {
     public BulkRequestBuilder getBulkRequestBuilder(){
         return new BulkRequestBuilder();
     }
-
-    @Bean
-    public SimpleRegression getSimpleRegression() { return new SimpleRegression(); }
 }

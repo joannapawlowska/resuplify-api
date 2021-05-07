@@ -1,5 +1,6 @@
 package com.io.resuplifyapi.service;
 
+import com.io.resuplifyapi.domain.Product;
 import com.io.resuplifyapi.domain.Shop;
 import com.io.resuplifyapi.domain.externalAPI.ProductModel;
 import com.io.resuplifyapi.repository.ShopRepository;
@@ -20,6 +21,9 @@ public class ShopService {
     @Autowired
     InventoryBalanceService inventoryBalanceService;
 
+    @Autowired
+    ProductService productService;
+
     public Optional<Shop> findById(int id){
         return shopRepository.findById(id);
     }
@@ -35,4 +39,10 @@ public class ShopService {
     }
 
     public void update(Shop shop, List<ProductModel> models) { inventoryBalanceService.updateInventory(models, shop.getProducts()); }
+
+    public void updatePredictions(Shop shop) {
+
+        for(Product product : shop.getProducts()){
+            productService.updatePrediction(product); }
+        }
 }
