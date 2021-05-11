@@ -38,7 +38,7 @@ public class ShopService {
         shopRepository.deleteById(shopId);
     }
 
-    public void update(Shop shop, List<ProductModel> models) { inventoryBalanceService.updateInventory(models, shop.getProducts()); }
+    public void updateProducts(Shop shop, List<ProductModel> models) { inventoryBalanceService.updateInventory(models, shop); }
 
     public void updatePredictions(Shop shop) {
 

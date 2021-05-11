@@ -2,6 +2,7 @@ package com.io.resuplifyapi.service;
 
 import com.io.resuplifyapi.domain.Prediction;
 import com.io.resuplifyapi.domain.Product;
+import com.io.resuplifyapi.domain.Shop;
 import com.io.resuplifyapi.domain.externalAPI.ProductModel;
 import com.io.resuplifyapi.domain.Stock;
 import org.springframework.stereotype.Service;
@@ -15,10 +16,12 @@ import java.util.Optional;
 public class InventoryBalanceService {
     
     private List<Product> products;
+    private Shop shop;
 
-    public void updateInventory(List<ProductModel> productModels, List<Product> products) {
-        
-        this.products = products;
+    public void updateInventory(List<ProductModel> productModels, Shop shop) {
+
+        this.shop = shop;
+        this.products = shop.getProducts();
         productModels.stream()
                 .filter(ProductModel::isActive)
                 .forEach(this::mapModelToProduct);
@@ -39,7 +42,7 @@ public class InventoryBalanceService {
 
     public void addNewProduct(ProductModel model){
 
-        Product product = new Product(adjustToMaxLength(model.getName()), model.getId(), model.getWarnLevel());
+        Product product = new Product(adjustToMaxLength(model.getName()), model.getId(), model.getWarnLevel(), shop);
         Stock stock = new Stock(LocalDate.now(), model.getStock());
         Prediction prediction = new Prediction(false);
 
@@ -59,18 +62,34 @@ public class InventoryBalanceService {
         int warnLevel = model.getWarnLevel();
         product.setWarnLevel(warnLevel);
 
-        if (hasRequiredNumberOfStocks(product)) {
-            updateTheOldestStock(product, stockLevel);
-        } else {
+        if(hasTodaysStock(product)){
+            updateTodaysStock(product, stockLevel);
+        }
+        else if (hasMaxNumberOfStocks(product)) {
+            replaceTheOldestStock(product, stockLevel);
+        }
+        else {
             addNewStock(product, stockLevel);
         }
     }
 
-    private boolean hasRequiredNumberOfStocks(Product product){
+    private boolean hasTodaysStock(Product product) { return product.getStocks().stream().anyMatch(s -> s.getDate().equals(LocalDate.now())); }
+
+    private void updateTodaysStock(Product product, int stockLevel){
+        Stock stock = product.getStocks().stream()
+                .filter(s -> s.getDate().equals(LocalDate.now()))
+                .findFirst()
+                .get();
+
+        stock.setDate(LocalDate.now());
+        stock.setLevel(stockLevel);
+    }
+
+    private boolean hasMaxNumberOfStocks(Product product){
         return product.getStocks().size() == 30;
     }
 
-    private void updateTheOldestStock(Product product, int stockLevel) {
+    private void replaceTheOldestStock(Product product, int stockLevel) {
 
         Stock stock = product.getStocks().stream()
                 .min(Comparator.comparing(Stock::getDate))

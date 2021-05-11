@@ -27,17 +27,21 @@ public class Product {
     @JoinColumn(name="prediction_id")
     private Prediction prediction;
 
+    @ManyToOne
+    @JoinColumn(name="shop_id")
+    private Shop shop;
+
     @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
     @JoinColumn(name="product_id")
     private List<Stock> stocks;
 
     public Product() {}
 
-    public Product(String name, int shoperId, int warnLevel) {
+    public Product(String name, int shoperId, int warnLevel, Shop shop) {
         this.name = name;
         this.shoperId = shoperId;
         this.warnLevel = warnLevel;
-        this.stocks = new ArrayList<>();
+        this.shop = shop;
     }
 
     public int getId() { return id; }
@@ -78,6 +82,14 @@ public class Product {
         this.prediction = prediction;
     }
 
+    public Shop getShop() {
+        return shop;
+    }
+
+    public void setShop(Shop shop) {
+        this.shop = shop;
+    }
+
     public List<Stock> getStocks() {
         return stocks;
     }
@@ -87,14 +99,17 @@ public class Product {
     }
 
     public void addStock(Stock stock){
+        if(stocks == null) this.stocks = new ArrayList<>();
         stocks.add(stock);
     }
 
     public static class Builder {
 
+        private int id;
         private int warnLevel;
         private Prediction prediction;
         private List<Stock> stocks;
+        private Shop shop;
 
         public static Builder builder(){
             return new Builder();
@@ -118,11 +133,17 @@ public class Product {
             return this;
         }
 
+        public Builder withShop(Shop shop){
+            this.shop = shop;
+            return this;
+        }
+
         public Product build(){
             Product p = new Product();
             p.setWarnLevel(warnLevel);
             p.setPrediction(prediction);
             p.setStocks(stocks);
+            p.setShop(shop);
             return p;
         }
     }

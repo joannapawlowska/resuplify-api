@@ -15,7 +15,7 @@ public class Stock {
     @Column(name="date")
     private LocalDate date;
 
-    @Column(name="stock")
+    @Column(name="level")
     private int level;
 
     public Stock(){}
@@ -23,6 +23,10 @@ public class Stock {
     public Stock(LocalDate date, int level) {
         this.date = date;
         this.level = level;
+    }
+
+    public Stock(LocalDate date) {
+        this.date = date;
     }
 
     public Stock(int level) {

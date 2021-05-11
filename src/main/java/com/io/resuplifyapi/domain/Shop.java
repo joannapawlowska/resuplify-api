@@ -26,8 +26,7 @@ public class Shop {
     @OneToOne(mappedBy="shop", cascade=CascadeType.ALL)
     private ShopOwner shopOwner;
 
-    @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
-    @JoinColumn(name="shop_id")
+    @OneToMany(mappedBy="shop", cascade=CascadeType.ALL, orphanRemoval=true)
     private List<Product> products;
 
     public Shop(){}
@@ -36,7 +35,6 @@ public class Shop {
         this.url = url;
         this.token = token;
         this.tokenRefreshDate = tokenRefreshDate;
-        this.products = new ArrayList<>();
     }
 
     public int getId() {
@@ -87,5 +85,7 @@ public class Shop {
         this.products = products;
     }
 
-    public void addProduct(Product product) { products.add(product);}
+    public void addProduct(Product product) {
+        if(products == null) products = new ArrayList<>();
+        products.add(product);}
 }

@@ -27,6 +27,16 @@ public class Prediction {
         this.valid = valid;
     }
 
+    public Prediction(boolean valid, LocalDate outOfStockDate){
+        this(valid);
+        this.outOfStockDate = outOfStockDate;
+    }
+
+    public Prediction(boolean valid, LocalDate outOfStockDate, double salePerDay){
+        this(valid, outOfStockDate);
+        this.salePerDay = salePerDay;
+    }
+
     public int getId() {
         return id;
     }
