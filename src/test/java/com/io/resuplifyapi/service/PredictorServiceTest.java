@@ -79,7 +79,7 @@ class PredictorServiceTest {
         assertAll(
                 () -> assertTrue(product.getPrediction().isValid()),
                 () -> assertEquals(product.getPrediction().getSalePerDay(), 0.7),
-                () -> assertEquals(product.getPrediction().getOutOfStockDate(), LocalDate.now().plusDays(2))
+                () -> assertEquals(product.getPrediction().getWarnLevelDate(), LocalDate.now().plusDays(2))
         );
     }
 
@@ -101,7 +101,7 @@ class PredictorServiceTest {
         assertAll(
                 () -> assertTrue(product.getPrediction().isValid()),
                 () -> assertEquals(product.getPrediction().getSalePerDay(), 0.6),
-                () -> assertEquals(product.getPrediction().getOutOfStockDate(), LocalDate.now().plusDays(3))
+                () -> assertEquals(product.getPrediction().getWarnLevelDate(), LocalDate.now().plusDays(3))
         );
     }
 
@@ -121,7 +121,7 @@ class PredictorServiceTest {
         assertAll(
                 () -> assertTrue(product.getPrediction().isValid()),
                 () -> assertEquals(product.getPrediction().getSalePerDay(), 0.9),
-                () -> assertEquals(product.getPrediction().getOutOfStockDate(), LocalDate.now())
+                () -> assertEquals(product.getPrediction().getWarnLevelDate(), LocalDate.now())
         );
     }
 
@@ -141,7 +141,7 @@ class PredictorServiceTest {
         assertAll(
                 () -> assertTrue(product.getPrediction().isValid()),
                 () -> assertEquals(product.getPrediction().getSalePerDay(), 0.7),
-                () -> assertEquals(product.getPrediction().getOutOfStockDate(), LocalDate.now().plusDays(2))
+                () -> assertEquals(product.getPrediction().getWarnLevelDate(), LocalDate.now().plusDays(2))
         );
     }
 }

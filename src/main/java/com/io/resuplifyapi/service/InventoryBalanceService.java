@@ -30,7 +30,7 @@ public class InventoryBalanceService {
     private void mapModelToProduct(final ProductModel model){
         
         Optional<Product> optional = products.stream()
-                .filter(product -> model.getId() == product.getShoperId())
+                .filter(product -> model.getId() == product.getExternalId())
                 .findFirst();
 
         if (optional.isEmpty()) {

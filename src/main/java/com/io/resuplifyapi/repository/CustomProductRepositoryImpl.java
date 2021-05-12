@@ -16,7 +16,7 @@ public class CustomProductRepositoryImpl implements CustomProductRepository{
     @Override
     public List<Product> findAllBySupplyCriteria(int shopId, LocalDate date) {
 
-        TypedQuery<Product> query = entityManager.createQuery("select p from Product p join p.shop s join p.prediction pn where s.id=:shopId and pn.valid=true and pn.outOfStockDate<:date", Product.class);
+        TypedQuery<Product> query = entityManager.createQuery("select p from Product p join p.shop s join p.prediction pn where s.id=:shopId and pn.valid=true and pn.warnLevelDate<:date", Product.class);
         query.setParameter("shopId", shopId);
         query.setParameter("date", date);
         return query.getResultList();

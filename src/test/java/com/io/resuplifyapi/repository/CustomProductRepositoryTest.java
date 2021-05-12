@@ -55,6 +55,7 @@ class CustomProductRepositoryTest {
 
         shop2.addProduct(
                 new Product.Builder()
+                        .withShop(shop2)
                         .withPrediction(new Prediction(true, LocalDate.now().minusDays(1)))
                         .build()
         );
@@ -64,7 +65,7 @@ class CustomProductRepositoryTest {
 
 
     @Test
-    public void shouldFindByShopIdAndPredictionActiveAndPredictionOutOfStockDateBeforeGivenDate(){
+    public void shouldFindByShopIdAndPredictionActiveAndWarnLevelDateBeforeGivenDate(){
 
         assertEquals(productRepository.findAllBySupplyCriteria(1, LocalDate.now()).size(), 2);
     }

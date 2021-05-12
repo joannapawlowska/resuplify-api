@@ -54,7 +54,7 @@ public class PredictorService {
         removeNotValidSubLists();
         convertStockSubListsIntoTimeSeries();
         calculateSalePerDay();
-        calculateOutOfStockDate();
+        calculateWarnLevelDate();
     }
 
     private void setGlobalVariables(Product product) {
@@ -114,7 +114,7 @@ public class PredictorService {
         product.getPrediction().setSalePerDay(salePerDay);
     }
 
-    private void calculateOutOfStockDate() {
+    private void calculateWarnLevelDate() {
 
         int availableUnits = getAvailableStockLevel();
         int numberOfDays = getNumberOfDaysUntilOutOfStock(availableUnits, product.getPrediction().getSalePerDay());
@@ -128,9 +128,9 @@ public class PredictorService {
     }
 
     private int getAvailableStockLevel(){
-        int stock = stocks.get(stocks.size() - 1).getLevel();
+        int stockLevel = stocks.get(stocks.size() - 1).getLevel();
         int warnLevel = product.getWarnLevel();
-        return stock - warnLevel;
+        return stockLevel - warnLevel;
     }
 
     private int getNumberOfDaysUntilOutOfStock(int availableUnits, double salePerDay){
@@ -139,12 +139,12 @@ public class PredictorService {
 
     private void setPredictionParams(int availableUnits, int numberOfDays){
 
-        LocalDate outOfStockDate;
+        LocalDate date;
 
-        if (availableUnits <= 0) outOfStockDate = LocalDate.now();
-        else outOfStockDate = LocalDate.now().plusDays(numberOfDays);
+        if (availableUnits <= 0) date = LocalDate.now();
+        else date = LocalDate.now().plusDays(numberOfDays);
 
-        product.getPrediction().setOutOfStockDate(outOfStockDate);
+        product.getPrediction().setWarnLevelDate(date);
         product.getPrediction().setValid(true);
 
     }

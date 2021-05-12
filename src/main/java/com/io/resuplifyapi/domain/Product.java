@@ -17,8 +17,8 @@ public class Product {
     @Column(name="name")
     private String name;
 
-    @Column(name="shoper_id")
-    private int shoperId;
+    @Column(name="external_id")
+    private int externalId;
 
     @Column(name="warn_level")
     private int warnLevel;
@@ -37,9 +37,9 @@ public class Product {
 
     public Product() {}
 
-    public Product(String name, int shoperId, int warnLevel, Shop shop) {
+    public Product(String name, int externalId, int warnLevel, Shop shop) {
         this.name = name;
-        this.shoperId = shoperId;
+        this.externalId = externalId;
         this.warnLevel = warnLevel;
         this.shop = shop;
     }
@@ -58,12 +58,12 @@ public class Product {
         this.name = name;
     }
 
-    public int getShoperId() {
-        return shoperId;
+    public int getExternalId() {
+        return externalId;
     }
 
-    public void setShoperId(int shoperId) {
-        this.shoperId = shoperId;
+    public void setExternalId(int shoperId) {
+        this.externalId = shoperId;
     }
 
     public int getWarnLevel() {

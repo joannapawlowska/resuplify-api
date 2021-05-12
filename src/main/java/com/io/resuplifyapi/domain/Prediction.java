@@ -18,8 +18,8 @@ public class Prediction {
     @Column(name="sale_per_day")
     private double salePerDay;
 
-    @Column(name="out_of_stock_date")
-    private LocalDate outOfStockDate;
+    @Column(name="warn_level_date")
+    private LocalDate warnLevelDate;
 
     public Prediction(){}
 
@@ -27,13 +27,13 @@ public class Prediction {
         this.valid = valid;
     }
 
-    public Prediction(boolean valid, LocalDate outOfStockDate){
+    public Prediction(boolean valid, LocalDate warnLevelDate){
         this(valid);
-        this.outOfStockDate = outOfStockDate;
+        this.warnLevelDate = warnLevelDate;
     }
 
-    public Prediction(boolean valid, LocalDate outOfStockDate, double salePerDay){
-        this(valid, outOfStockDate);
+    public Prediction(boolean valid, LocalDate warnLevelDate, double salePerDay){
+        this(valid, warnLevelDate);
         this.salePerDay = salePerDay;
     }
 
@@ -61,11 +61,11 @@ public class Prediction {
         this.salePerDay = salePerDay;
     }
 
-    public LocalDate getOutOfStockDate() {
-        return outOfStockDate;
+    public LocalDate getWarnLevelDate() {
+        return warnLevelDate;
     }
 
-    public void setOutOfStockDate(LocalDate outOfStockDate) {
-        this.outOfStockDate = outOfStockDate;
+    public void setWarnLevelDate(LocalDate outOfStockDate) {
+        this.warnLevelDate = outOfStockDate;
     }
 }
