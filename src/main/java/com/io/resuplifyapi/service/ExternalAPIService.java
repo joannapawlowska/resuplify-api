@@ -1,12 +1,15 @@
 package com.io.resuplifyapi.service;
 
+import com.io.resuplifyapi.domain.UserDto;
 import com.io.resuplifyapi.domain.externalAPI.*;
 import com.io.resuplifyapi.domain.externalAPI.ProductModel;
 
+import com.io.resuplifyapi.exception.ExternalAPIAuthException;
 import com.io.resuplifyapi.exception.ExternalAPICallException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.retry.Repeat;
@@ -23,21 +26,14 @@ public class ExternalAPIService {
     @Autowired
     private BulkRequestBuilder bulkRequestBuilder;
 
-    private List<List<ProductsRequest>> bulkRequestsList;
     private List<ProductModel> productModels;
     private int totalProductsNumber;
-    private String url;
-    private String token;
 
     public List<ProductModel> requestForProducts(String url, String token) throws ExternalAPICallException {
 
-        this.url = url;
-        this.token = token;
-
         try {
-            requestForTotalProductsNumber();
-            prepareBulkRequests();
-            performBulkRequests();
+            requestForTotalProductsNumber(url, token);
+            performBulkRequestsForProductModels(url, token);
 
         } catch (WebClientResponseException e) {
             throw new ExternalAPICallException(String.valueOf(e.getStatusCode()));
@@ -46,7 +42,7 @@ public class ExternalAPIService {
         return productModels;
     }
 
-    protected void requestForTotalProductsNumber() throws WebClientResponseException {
+    protected void requestForTotalProductsNumber(String url, String token) throws WebClientResponseException {
 
         ProductsCountResponse productsCountResponse = webClientBuilder
                 .build()
@@ -60,19 +56,22 @@ public class ExternalAPIService {
         totalProductsNumber = productsCountResponse.getCount();
     }
 
-    private void prepareBulkRequests() {
-        bulkRequestsList = bulkRequestBuilder.prepareProductsRequests(totalProductsNumber);
-    }
+    private void performBulkRequestsForProductModels(String url, String token) throws WebClientResponseException {
 
-    private void performBulkRequests() throws ExternalAPICallException {
+        List<List<ProductsRequest>> bulkRequestsList = prepareBulkRequests();
+
         productModels = bulkRequestsList
                 .parallelStream()
-                .map(this::requestForProducts)
+                .map(bulkRequest -> requestForProducts(bulkRequest, url, token))
                 .flatMap(Flux::toStream)
                 .collect(Collectors.toList());
     }
 
-    private Flux<ProductModel> requestForProducts(List<ProductsRequest> bulkRequest) throws WebClientResponseException {
+    private List<List<ProductsRequest>> prepareBulkRequests() {
+        return bulkRequestBuilder.prepareProductsRequests(totalProductsNumber);
+    }
+
+    private Flux<ProductModel> requestForProducts(List<ProductsRequest> bulkRequest, String url, String token) throws WebClientResponseException {
         return webClientBuilder
                 .build()
                 .post()
@@ -85,5 +84,34 @@ public class ExternalAPIService {
                 .repeatWhenEmpty(Repeat.times(2))
                 .flatMapIterable(BulkResponse::getProductsResponses)
                 .flatMapIterable(ProductsResponse::getProductModels);
+    }
+
+    public AuthResponse authenticateShopOwner(UserDto userDto) throws ExternalAPIAuthException{
+
+        try{
+            return authenticate(userDto);
+
+        }catch (WebClientRequestException e){
+            throw new ExternalAPIAuthException("Invalid url");
+
+        }catch(WebClientResponseException e){
+
+            if(e.getRawStatusCode() == 401)
+                throw new ExternalAPIAuthException("Invalid username or password");
+            else
+                throw new ExternalAPIAuthException("Could not authorize due to server error");
+        }
+    }
+
+    protected AuthResponse authenticate(UserDto userDto) throws WebClientResponseException, WebClientRequestException {
+
+        return webClientBuilder
+                .build()
+                .post()
+                .uri("https://" + userDto.getUrl() + "/webapi/rest/auth")
+                .headers(h -> h.setBasicAuth(userDto.getUsername(), userDto.getPassword()))
+                .retrieve()
+                .bodyToMono(AuthResponse.class)
+                .block();
     }
 }
