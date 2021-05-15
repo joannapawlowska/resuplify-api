@@ -144,4 +144,18 @@ class PredictorServiceTest {
                 () -> assertEquals(product.getPrediction().getWarnLevelDate(), LocalDate.now().plusDays(2))
         );
     }
+
+    @Test
+    public void shouldSetNotValidPredictionWhenOnlySingleStocksAfterDelivery(){
+        Product product = new Product.Builder()
+                .withPrediction(new Prediction())
+                .withWarnLevel(1)
+                .withStocks(new Stock(LocalDate.now().minusDays(3),2),
+                            new Stock(LocalDate.now(), 5))
+                .build();
+
+        service.updatePrediction(product);
+
+        assertFalse(product.getPrediction().isValid());
+    }
 }

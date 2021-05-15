@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Service
 public class PredictorService {
 
-    private final int MIN_STOCK_NUMBER_TO_PREDICT = 3;
+    private final int MIN_STOCK_NUMBER_TO_PREDICT = 2;
     private final int MAX_DAYS_AHEAD_WHEN_PREDICTION_VALID = 30;
     private Product product;
     private List<Stock> stocks;
@@ -53,8 +53,7 @@ public class PredictorService {
         splitStocksIntoSubListsIfDeliveryOccurred();
         removeNotValidSubLists();
         convertStockSubListsIntoTimeSeries();
-        calculateSalePerDay();
-        calculateWarnLevelDate();
+        calculatePredictionParams();
     }
 
     private void setGlobalVariables(Product product) {
@@ -109,7 +108,18 @@ public class PredictorService {
         }
     }
 
-    private void calculateSalePerDay(){
+    private void calculatePredictionParams(){
+
+        if(!timeSeries.isEmpty()){
+            calculateSalePerDay();
+            calculateWarnLevelDate();
+        }
+        else{
+            product.getPrediction().setValid(false);
+        }
+    }
+
+    private void calculateSalePerDay() {
         double salePerDay = (-1) * AveragedLinearRegression.getSlope(timeSeries);
         product.getPrediction().setSalePerDay(salePerDay);
     }
