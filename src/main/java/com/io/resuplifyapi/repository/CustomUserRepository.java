@@ -1,6 +1,6 @@
 package com.io.resuplifyapi.repository;
 
-public interface CustomShopOwnerRepository {
+public interface CustomUserRepository {
 
     boolean existsByUsernameAndShopUrl(String username, String url);
 }

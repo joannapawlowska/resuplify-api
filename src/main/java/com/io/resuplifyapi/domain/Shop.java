@@ -23,9 +23,6 @@ public class Shop {
     @Column(name="token_refresh_date")
     private LocalDate tokenRefreshDate;
 
-    @OneToOne(mappedBy="shop", cascade=CascadeType.ALL)
-    private ShopOwner shopOwner;
-
     @OneToMany(mappedBy="shop", cascade=CascadeType.ALL, orphanRemoval=true)
     private List<Product> products;
 
@@ -67,14 +64,6 @@ public class Shop {
 
     public void setTokenRefreshDate(LocalDate tokenRefreshDate) {
         this.tokenRefreshDate = tokenRefreshDate;
-    }
-
-    public ShopOwner getShopOwner() {
-        return shopOwner;
-    }
-
-    public void setShopOwner(ShopOwner shopOwner) {
-        this.shopOwner = shopOwner;
     }
 
     public List<Product> getProducts() {

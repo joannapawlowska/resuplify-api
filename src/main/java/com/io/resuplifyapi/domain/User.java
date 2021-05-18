@@ -2,10 +2,9 @@ package com.io.resuplifyapi.domain;
 
 import javax.persistence.*;
 
-
 @Entity
-@Table(name="shop_owner")
-public class ShopOwner {
+@Table(name="user_account")
+public class User {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -22,11 +21,12 @@ public class ShopOwner {
     @JoinColumn(name="shop_id")
     private Shop shop;
 
-    public ShopOwner(){}
+    public User(){}
 
-    public ShopOwner(String username, String password) {
+    public User(String username, String password, Shop shop) {
         this.username = username;
         this.password = password;
+        this.shop = shop;
     }
 
     public int getId() {

@@ -1,13 +1,13 @@
 package com.io.resuplifyapi.repository;
 
-import com.io.resuplifyapi.domain.ShopOwner;
+import com.io.resuplifyapi.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
-public class CustomShopOwnerRepositoryImpl implements CustomShopOwnerRepository{
+public class CustomUserRepositoryImpl implements CustomUserRepository {
 
     @Autowired
     EntityManager entityManager;
@@ -15,12 +15,12 @@ public class CustomShopOwnerRepositoryImpl implements CustomShopOwnerRepository{
     @Override
     public boolean existsByUsernameAndShopUrl(String username, String url) {
 
-        TypedQuery<ShopOwner> query = entityManager.createQuery("select so from ShopOwner so join so.shop s where so.username=:username and s.url=:url", ShopOwner.class);
+        TypedQuery<User> query = entityManager.createQuery("select u from User u join u.shop s where u.username=:username and s.url=:url", User.class);
         query.setParameter("username", username);
         query.setParameter("url", url);
 
         try{
-            ShopOwner s = query.getSingleResult();
+            User u = query.getSingleResult();
         }catch(NoResultException e){
             return false;
         }
