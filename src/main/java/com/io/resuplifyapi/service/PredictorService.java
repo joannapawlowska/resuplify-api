@@ -33,16 +33,16 @@ public class PredictorService {
 
     private boolean canBePredicted(Product product) {
         List<Stock> stocks = product.getStocks();
-        return enoughStocks(stocks) && notConstantStockLevels(stocks);
+        return enoughStocks(stocks) && !constantStockLevels(stocks);
     }
 
     private boolean enoughStocks(List<Stock> stocks){
         return stocks.size() >= MIN_STOCK_NUMBER_TO_PREDICT;
     }
 
-    private boolean notConstantStockLevels(List<Stock> stocks) {
+    private boolean constantStockLevels(List<Stock> stocks) {
         int stockValue = stocks.get(0).getLevel();
-        return !stocks.stream()
+        return stocks.stream()
                 .map(Stock::getLevel)
                 .allMatch(stock -> stock.equals(stockValue));
     }
@@ -93,6 +93,9 @@ public class PredictorService {
                         .filter(sublist -> sublist.size() > 1)
                         .filter(Predicate.not(sublist -> sublist.stream().allMatch(stock -> stock.getLevel() == 0)))
                         .collect(Collectors.toList());
+
+        if(stocksSubLists.size() == 1 && constantStockLevels(stocksSubLists.get(0)))
+            stocksSubLists.clear();
     }
 
     private void convertStockSubListsIntoTimeSeries() {
@@ -127,7 +130,7 @@ public class PredictorService {
     private void calculateWarnLevelDate() {
 
         int availableUnits = getAvailableStockLevel();
-        int numberOfDays = getNumberOfDaysUntilOutOfStock(availableUnits, product.getPrediction().getSalePerDay());
+        int numberOfDays = getNumberOfDaysBeforeWarnLevelReached(availableUnits, product.getPrediction().getSalePerDay());
 
         if(numberOfDays > MAX_DAYS_AHEAD_WHEN_PREDICTION_VALID){
             product.getPrediction().setValid(false);
@@ -140,10 +143,10 @@ public class PredictorService {
     private int getAvailableStockLevel(){
         int stockLevel = stocks.get(stocks.size() - 1).getLevel();
         int warnLevel = product.getWarnLevel();
-        return stockLevel - warnLevel;
+        return Math.max(stockLevel - warnLevel, 0);
     }
 
-    private int getNumberOfDaysUntilOutOfStock(int availableUnits, double salePerDay){
+    private int getNumberOfDaysBeforeWarnLevelReached(int availableUnits, double salePerDay){
         return (int) Math.floor(availableUnits / salePerDay);
     }
 
@@ -151,12 +154,15 @@ public class PredictorService {
 
         LocalDate date;
 
-        if (availableUnits <= 0) date = LocalDate.now();
-        else date = LocalDate.now().plusDays(numberOfDays);
+        if (availableUnits > 0){
+            date = LocalDate.now().plusDays(numberOfDays);
+        }
+        else{
+            date = LocalDate.now();
+        }
 
         product.getPrediction().setWarnLevelDate(date);
         product.getPrediction().setValid(true);
-
     }
 
     //Performs linear regressions for each time series and then averages
