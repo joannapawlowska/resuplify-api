@@ -3,6 +3,7 @@ package com.io.resuplifyapi.service;
 import com.io.resuplifyapi.domain.UserDto;
 import com.io.resuplifyapi.exception.ExternalAPIAuthException;
 import com.io.resuplifyapi.exception.ExternalAPICallException;
+import com.io.resuplifyapi.exception.ExternalAPIUnavailableException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -28,7 +29,7 @@ class ExternalAPIServiceTest {
     }
 
     @Test
-    public void shouldThrowWhenExternalApiIsDown() {
+    public void shouldThrowWhenGettingProductsAndExternalApiIsDown() {
         ExternalAPIService serviceSpy = spy(service);
         String url = UUID.randomUUID().toString();
         String token = UUID.randomUUID().toString();
@@ -46,7 +47,7 @@ class ExternalAPIServiceTest {
     }
 
     @Test
-    public void shouldThrowWhenInvalidUrl(){
+    public void shouldThrowWhenAuthorizingAndInvalidUrl(){
         ExternalAPIService serviceSpy = spy(service);
         UserDto userDto = new UserDto();
 
@@ -54,7 +55,7 @@ class ExternalAPIServiceTest {
                 .when(serviceSpy)
                 .authenticate(userDto);
 
-        Throwable exceptionThrown = assertThrows(ExternalAPIAuthException.class, () -> serviceSpy.authenticateShopOwner(userDto));
+        Throwable exceptionThrown = assertThrows(ExternalAPIAuthException.class, () -> serviceSpy.authenticateUserAccount(userDto));
         assertThat(exceptionThrown.getMessage()).isEqualTo("Invalid url");
     }
 
@@ -63,7 +64,7 @@ class ExternalAPIServiceTest {
     }
 
     @Test
-    public void shouldThrowWhenInvalidUserCredentials(){
+    public void shouldThrowWhenAuthorizingAndInvalidUserCredentials(){
         ExternalAPIService serviceSpy = spy(service);
         UserDto userDto = new UserDto();
 
@@ -71,12 +72,12 @@ class ExternalAPIServiceTest {
                 .when(serviceSpy)
                 .authenticate(userDto);
 
-        Throwable exceptionThrown = assertThrows(ExternalAPIAuthException.class, () -> serviceSpy.authenticateShopOwner(userDto));
+        Throwable exceptionThrown = assertThrows(ExternalAPIAuthException.class, () -> serviceSpy.authenticateUserAccount(userDto));
         assertThat(exceptionThrown.getMessage()).isEqualTo("Invalid username or password");
     }
 
     @Test
-    public void shouldThrowWhenExternalApiIsDow(){
+    public void shouldThrowWhenAuthorizingAndExternalApiIsDow(){
         ExternalAPIService serviceSpy = spy(service);
         UserDto userDto = new UserDto();
 
@@ -84,7 +85,7 @@ class ExternalAPIServiceTest {
                 .when(serviceSpy)
                 .authenticate(userDto);
 
-        Throwable exceptionThrown = assertThrows(ExternalAPIAuthException.class, () -> serviceSpy.authenticateShopOwner(userDto));
-        assertThat(exceptionThrown.getMessage()).isEqualTo("Could not authorize due to server error");
+        Throwable exceptionThrown = assertThrows(ExternalAPIUnavailableException.class, () -> serviceSpy.authenticateUserAccount(userDto));
+        assertThat(exceptionThrown.getMessage()).isEqualTo("Could not authorize");
     }
 }

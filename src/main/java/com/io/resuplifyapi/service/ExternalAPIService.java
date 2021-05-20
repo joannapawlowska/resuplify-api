@@ -2,16 +2,17 @@ package com.io.resuplifyapi.service;
 
 import com.io.resuplifyapi.domain.UserDto;
 import com.io.resuplifyapi.domain.externalAPI.*;
-import com.io.resuplifyapi.domain.externalAPI.ProductModel;
-
 import com.io.resuplifyapi.exception.ExternalAPIAuthException;
 import com.io.resuplifyapi.exception.ExternalAPICallException;
+import com.io.resuplifyapi.exception.ExternalAPIUnavailableException;
+import com.io.resuplifyapi.exception.InvalidUrlException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.retry.Repeat;
 
 import java.util.List;
@@ -86,32 +87,38 @@ public class ExternalAPIService {
                 .flatMapIterable(ProductsResponse::getProductModels);
     }
 
-    public AuthResponse authenticateShopOwner(UserDto userDto) throws ExternalAPIAuthException{
+    public AuthResponse authenticateUserAccount(UserDto userDto) throws ExternalAPIAuthException, ExternalAPIUnavailableException {
 
         try{
             return authenticate(userDto);
-
-        }catch (WebClientRequestException e){
+        }
+        catch (WebClientRequestException | InvalidUrlException e){
             throw new ExternalAPIAuthException("Invalid url");
 
         }catch(WebClientResponseException e){
 
             if(e.getRawStatusCode() == 401)
                 throw new ExternalAPIAuthException("Invalid username or password");
+
+            else if(e.getStatusCode().is5xxServerError())
+                throw new ExternalAPIUnavailableException("Could not authorize");
+
             else
-                throw new ExternalAPIAuthException("Could not authorize due to server error");
+                throw new ExternalAPIAuthException("Invalid url");
         }
     }
 
-    protected AuthResponse authenticate(UserDto userDto) throws WebClientResponseException, WebClientRequestException {
+    protected AuthResponse authenticate(UserDto userDto) throws WebClientRequestException, WebClientResponseException {
 
-        return webClientBuilder
-                .build()
-                .post()
-                .uri("https://" + userDto.getUrl() + "/webapi/rest/auth")
-                .headers(h -> h.setBasicAuth(userDto.getUsername(), userDto.getPassword()))
-                .retrieve()
-                .bodyToMono(AuthResponse.class)
-                .block();
+                return webClientBuilder
+                        .build()
+                        .post()
+                        .uri("https://" + userDto.getUrl() + "/webapi/rest/auth")
+                        .headers(h -> h.setBasicAuth(userDto.getUsername(), userDto.getPassword()))
+                        .retrieve()
+                        .bodyToMono(AuthResponse.class)
+                        .switchIfEmpty(Mono.error(new InvalidUrlException()))
+                        .block();
+
     }
 }
