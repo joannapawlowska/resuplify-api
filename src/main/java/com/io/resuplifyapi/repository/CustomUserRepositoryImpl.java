@@ -13,17 +13,20 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
     EntityManager entityManager;
 
     @Override
-    public boolean existsByUsernameAndShopUrl(String username, String url) {
+    public boolean existsByUsername(String username) {
+        return findByUsername(username) != null;
+    }
 
-        TypedQuery<User> query = entityManager.createQuery("select u from User u join u.shop s where u.username=:username and s.url=:url", User.class);
+    @Override
+    public User findByUsername(String username){
+
+        TypedQuery<User> query = entityManager.createQuery("select u from User u where u.username=:username", User.class);
         query.setParameter("username", username);
-        query.setParameter("url", url);
 
         try{
-            User u = query.getSingleResult();
+            return query.getSingleResult();
         }catch(NoResultException e){
-            return false;
+            return null;
         }
-        return true;
     }
 }

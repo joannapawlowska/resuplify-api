@@ -14,6 +14,11 @@ public class AuthResponse {
 
     public AuthResponse() {}
 
+    public AuthResponse(String accessToken, int expiresIn) {
+        this.accessToken = accessToken;
+        this.expiresIn = expiresIn;
+    }
+
     public String getAccessToken() {
         return accessToken;
     }

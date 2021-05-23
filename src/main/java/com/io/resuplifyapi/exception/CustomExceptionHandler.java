@@ -37,4 +37,14 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler{
     protected ResponseEntity<Object> handleInvalidRequestBodyException(InvalidRequestBodyException e){
         return buildResponse("Invalid request body", e.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    protected ResponseEntity<Object> handleUserNotFoundBodyException(UserNotFoundException e){
+        return buildResponse("User not found", e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    protected ResponseEntity<Object> handleInvalidCredentialsException(InvalidCredentialsException e){
+        return buildResponse("Invalid credentials", e.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
 }

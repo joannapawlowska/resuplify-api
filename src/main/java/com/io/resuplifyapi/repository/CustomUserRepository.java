@@ -1,6 +1,10 @@
 package com.io.resuplifyapi.repository;
 
+import com.io.resuplifyapi.domain.User;
+
 public interface CustomUserRepository {
 
-    boolean existsByUsernameAndShopUrl(String username, String url);
+    boolean existsByUsername(String username);
+
+    User findByUsername(String username);
 }
