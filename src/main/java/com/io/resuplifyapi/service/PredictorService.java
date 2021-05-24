@@ -94,8 +94,14 @@ public class PredictorService {
                         .filter(Predicate.not(sublist -> sublist.stream().allMatch(stock -> stock.getLevel() == 0)))
                         .collect(Collectors.toList());
 
-        if(stocksSubLists.size() == 1 && constantStockLevels(stocksSubLists.get(0)))
+        if(allSubListsHaveConstantStockLevels())
             stocksSubLists.clear();
+    }
+
+    private boolean allSubListsHaveConstantStockLevels(){
+        return stocksSubLists
+                .stream()
+                .allMatch(this::constantStockLevels);
     }
 
     private void convertStockSubListsIntoTimeSeries() {
@@ -161,6 +167,8 @@ public class PredictorService {
             date = LocalDate.now();
         }
 
+
+        System.out.println("product: " + product.getId() + "\t, date: " + date);
         product.getPrediction().setWarnLevelDate(date);
         product.getPrediction().setValid(true);
     }
