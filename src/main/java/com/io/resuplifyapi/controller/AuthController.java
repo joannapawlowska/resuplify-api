@@ -7,6 +7,7 @@ import com.io.resuplifyapi.domain.externalAPI.AuthResponse;
 import com.io.resuplifyapi.exception.InvalidCredentialsException;
 import com.io.resuplifyapi.exception.InvalidRequestBodyException;
 import com.io.resuplifyapi.service.ExternalAPIService;
+import com.io.resuplifyapi.service.ShopService;
 import com.io.resuplifyapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,13 +29,16 @@ import javax.validation.Valid;
 public class AuthController {
 
     @Autowired
-    ExternalAPIService externalAPIService;
+    private ExternalAPIService externalAPIService;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private ShopService shopService;
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
@@ -56,9 +60,12 @@ public class AuthController {
 
         try{
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getPassword()));
+
         }catch(BadCredentialsException e){
             throw new InvalidCredentialsException(e.getMessage());
         }
+
+        shopService.refreshExternalAPITokenIfRequired(userDto);
 
         final UserDetails userDetails = userService.loadUserByUsername(userDto.getUsername());
         final String jwtToken = jwtTokenProvider.createJwtToken(userDetails);

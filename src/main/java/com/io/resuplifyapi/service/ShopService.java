@@ -2,12 +2,16 @@ package com.io.resuplifyapi.service;
 
 import com.io.resuplifyapi.domain.Product;
 import com.io.resuplifyapi.domain.Shop;
+import com.io.resuplifyapi.domain.User;
+import com.io.resuplifyapi.domain.UserDto;
+import com.io.resuplifyapi.domain.externalAPI.AuthResponse;
 import com.io.resuplifyapi.domain.externalAPI.ProductModel;
 import com.io.resuplifyapi.repository.ShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,25 +28,57 @@ public class ShopService {
     @Autowired
     ProductService productService;
 
-    public Optional<Shop> findById(int id){
-        return shopRepository.findById(id);
+    @Autowired
+    ExternalAPIService externalAPIService;
+
+    @Autowired
+    UserService userService;
+
+    public List<Shop> findAll() {
+        return shopRepository.findAll();
     }
 
-    public List<Shop> findAll(){ return shopRepository.findAll(); }
-
-    public void save(Shop shop){
+    public void save(Shop shop) {
         shopRepository.save(shop);
     }
 
-    public void deleteById(int shopId){
+    public void deleteById(int shopId) {
         shopRepository.deleteById(shopId);
     }
 
-    public void updateProducts(Shop shop, List<ProductModel> models) { inventoryBalanceService.updateInventory(models, shop); }
+    public void updateProducts(Shop shop, List<ProductModel> models) {
+        inventoryBalanceService.updateInventory(models, shop);
+    }
 
     public void updatePredictions(Shop shop) {
 
-        for(Product product : shop.getProducts()){
-            productService.updatePrediction(product); }
+        for (Product product : shop.getProducts()) {
+            productService.updatePrediction(product);
         }
+    }
+
+    public void refreshExternalAPITokenIfRequired(UserDto userDto){
+
+        User user = userService.findByUsername(userDto.getUsername());
+        Shop shop = user.getShop();
+        LocalDate date = shop.getTokenRefreshDate();
+
+        if(shouldTokenBeRefreshed(date)){
+
+            refreshToken(shop, userDto);
+            save(shop);
+        }
+    }
+
+    private boolean shouldTokenBeRefreshed(LocalDate tokenRefreshDate){
+        return LocalDate.now().plusDays(7).isAfter(tokenRefreshDate);
+    }
+
+    public void refreshToken(Shop shop, UserDto userDto) {
+
+        userDto.setUrl(shop.getUrl());
+        AuthResponse response = externalAPIService.authenticateUserAccount(userDto);
+        shop.setToken(response.getAccessToken());
+        shop.setTokenRefreshDate(LocalDate.now());
+    }
 }
