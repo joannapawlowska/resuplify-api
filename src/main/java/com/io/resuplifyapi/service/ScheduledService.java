@@ -27,7 +27,7 @@ public class ScheduledService {
     InventoryBalanceService inventoryBalanceService;
 
     @Transactional
-    @Scheduled(cron = "0 0 6-13 * * ?", zone = "Europe/Warsaw")
+    @Scheduled(cron = "0 0 6,13 * * ?", zone = "Europe/Warsaw")
     public void updateEachShopInventoryBalances(){
 
         List<Shop> shops = shopService.findAll();
@@ -43,12 +43,12 @@ public class ScheduledService {
             shopService.updateProducts(shop, productModels);
             shopService.save(shop);
         }catch(ExternalAPICallException e){
-            logger.error("Unable to update data for shop with id {} : response {}", shop.getId(), e.getMessage());
+            logger.error("Unable to update data for shop with id {} due to error {}", shop.getId(), e.getMessage());
         }
     }
 
     @Transactional
-    @Scheduled(cron = "0 45 6-13 * * ?", zone = "Europe/Warsaw")
+    @Scheduled(cron = "0 45 6,13 * * ?", zone = "Europe/Warsaw")
     public void updateEachShopProductsPrediction(){
 
         List<Shop> shops = shopService.findAll();

@@ -89,11 +89,11 @@ class PredictorServiceTest {
                 .withPrediction(new Prediction())
                 .withWarnLevel(1)
                 .withStocks(new Stock(LocalDate.now().minusDays(5), 1),
-                        new Stock(LocalDate.now().minusDays(4), 1),
-                        new Stock(LocalDate.now().minusDays(3),5),
-                        new Stock(LocalDate.now().minusDays(2),5),
-                        new Stock(LocalDate.now().minusDays(1),4),
-                        new Stock(LocalDate.now(), 3))
+                            new Stock(LocalDate.now().minusDays(4), 1),
+                            new Stock(LocalDate.now().minusDays(3),5),
+                            new Stock(LocalDate.now().minusDays(2),5),
+                            new Stock(LocalDate.now().minusDays(1),4),
+                            new Stock(LocalDate.now(), 3))
                 .build();
 
         service.updatePrediction(product);
@@ -152,6 +152,24 @@ class PredictorServiceTest {
                 .withWarnLevel(1)
                 .withStocks(new Stock(LocalDate.now().minusDays(3),2),
                             new Stock(LocalDate.now(), 5))
+                .build();
+
+        service.updatePrediction(product);
+
+        assertFalse(product.getPrediction().isValid());
+    }
+
+    @Test
+    public void shouldSetNotValidPredictionWhenMultipleConstantStockLevels(){
+        Product product = new Product.Builder()
+                .withPrediction(new Prediction())
+                .withWarnLevel(1)
+                .withStocks(new Stock(LocalDate.now().minusDays(5),1),
+                            new Stock(LocalDate.now().minusDays(4),1),
+                            new Stock(LocalDate.now().minusDays(3),5),
+                            new Stock(LocalDate.now().minusDays(2),5),
+                            new Stock(LocalDate.now().minusDays(1),7),
+                            new Stock(LocalDate.now(), 7))
                 .build();
 
         service.updatePrediction(product);

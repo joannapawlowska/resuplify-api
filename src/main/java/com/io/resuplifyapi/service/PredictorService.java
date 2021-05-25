@@ -167,8 +167,6 @@ public class PredictorService {
             date = LocalDate.now();
         }
 
-
-        System.out.println("product: " + product.getId() + "\t, date: " + date);
         product.getPrediction().setWarnLevelDate(date);
         product.getPrediction().setValid(true);
     }
