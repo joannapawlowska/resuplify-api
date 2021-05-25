@@ -24,13 +24,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     AuthEntryPoint authEntryPoint;
 
+    @Autowired
+    JwtTokenFilter jwtTokenFilter;
+
     @Bean
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
-
-    @Bean
-    public JwtTokenFilter authenticationJwtFilter() { return new JwtTokenFilter(); }
 
     @Override
     @Bean
@@ -40,6 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
         http
                 .csrf().disable()
                 .exceptionHandling()
@@ -52,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/auth/**").permitAll()
                     .anyRequest().authenticated()
                     .and()
-                .addFilterBefore(authenticationJwtFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override

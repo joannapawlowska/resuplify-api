@@ -6,6 +6,8 @@ import com.io.resuplifyapi.exception.ExternalAPIAuthException;
 import com.io.resuplifyapi.exception.ExternalAPICallException;
 import com.io.resuplifyapi.exception.ExternalAPIUnavailableException;
 import com.io.resuplifyapi.exception.InvalidUrlException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -15,7 +17,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.retry.Repeat;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 @Service
@@ -117,6 +121,8 @@ public class ExternalAPIService {
                         .headers(h -> h.setBasicAuth(userDto.getUsername(), userDto.getPassword()))
                         .retrieve()
                         .bodyToMono(AuthResponse.class)
+                        .timeout(Duration.ofSeconds(7))
+                        .onErrorMap(TimeoutException.class, e -> new InvalidUrlException())
                         .switchIfEmpty(Mono.error(new InvalidUrlException()))
                         .block();
 
