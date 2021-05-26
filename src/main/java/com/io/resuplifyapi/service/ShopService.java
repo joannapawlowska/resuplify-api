@@ -6,6 +6,8 @@ import com.io.resuplifyapi.domain.User;
 import com.io.resuplifyapi.domain.UserDto;
 import com.io.resuplifyapi.domain.externalAPI.AuthResponse;
 import com.io.resuplifyapi.domain.externalAPI.ProductModel;
+import com.io.resuplifyapi.exception.ExternalAPIAuthException;
+import com.io.resuplifyapi.exception.ExternalAPIUnavailableException;
 import com.io.resuplifyapi.repository.ShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Transactional
@@ -57,28 +59,27 @@ public class ShopService {
         }
     }
 
-    public void refreshExternalAPITokenIfRequired(UserDto userDto){
+    public void refreshExternalAPITokenIfRequired(UserDto userDto) throws ExternalAPIAuthException, ExternalAPIUnavailableException {
 
         User user = userService.findByUsername(userDto.getUsername());
         Shop shop = user.getShop();
-        LocalDate date = shop.getTokenRefreshDate();
+        LocalDate date = shop.getTokenValidityDate();
 
-        if(shouldTokenBeRefreshed(date)){
-
+        if (shouldTokenBeRefreshed(date)) {
             refreshToken(shop, userDto);
             save(shop);
         }
     }
 
-    private boolean shouldTokenBeRefreshed(LocalDate tokenRefreshDate){
+    private boolean shouldTokenBeRefreshed(LocalDate tokenRefreshDate) {
         return LocalDate.now().plusDays(7).isAfter(tokenRefreshDate);
     }
 
-    public void refreshToken(Shop shop, UserDto userDto) {
+    public void refreshToken(Shop shop, UserDto userDto) throws ExternalAPIAuthException, ExternalAPIUnavailableException {
 
         userDto.setUrl(shop.getUrl());
         AuthResponse response = externalAPIService.authenticateUserAccount(userDto);
         shop.setToken(response.getAccessToken());
-        shop.setTokenRefreshDate(LocalDate.now());
+        shop.setTokenValidityDate(LocalDate.now().plusDays(TimeUnit.SECONDS.toDays(response.getExpiresIn())));
     }
 }

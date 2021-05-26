@@ -1,10 +1,25 @@
 package com.io.resuplifyapi.domain;
 
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.TypeDefs;
+import org.jasypt.hibernate5.type.EncryptedStringType;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@TypeDefs({
+        @TypeDef(
+                name = "encryptedString",
+                typeClass = EncryptedStringType.class,
+                parameters = {
+                        @Parameter(name = "encryptorRegisteredName", value = "stringEncryptor")
+                }
+        )
+})
 @Entity
 @Table(name="shop")
 public class Shop {
@@ -14,24 +29,26 @@ public class Shop {
     @Column(name="id")
     private int id;
 
+    @Type(type = "encryptedString")
     @Column(name="url")
     private String url;
 
+    @Type(type="encryptedString")
     @Column(name="token")
     private String token;
 
-    @Column(name="token_refresh_date")
-    private LocalDate tokenRefreshDate;
+    @Column(name="token_validity_date")
+    private LocalDate tokenValidityDate;
 
     @OneToMany(mappedBy="shop", cascade=CascadeType.ALL, orphanRemoval=true)
     private List<Product> products;
 
     public Shop(){}
 
-    public Shop(String url, String token, LocalDate tokenRefreshDate) {
+    public Shop(String url, String token, LocalDate tokenValidityDate) {
         this.url = url;
         this.token = token;
-        this.tokenRefreshDate = tokenRefreshDate;
+        this.tokenValidityDate = tokenValidityDate;
     }
 
     public int getId() {
@@ -51,6 +68,8 @@ public class Shop {
     }
 
     public String getToken() {
+
+        System.out.println(token);
         return token;
     }
 
@@ -58,12 +77,12 @@ public class Shop {
         this.token = token;
     }
 
-    public LocalDate getTokenRefreshDate() {
-        return tokenRefreshDate;
+    public LocalDate getTokenValidityDate() {
+        return tokenValidityDate;
     }
 
-    public void setTokenRefreshDate(LocalDate tokenRefreshDate) {
-        this.tokenRefreshDate = tokenRefreshDate;
+    public void setTokenValidityDate(LocalDate tokenRefreshDate) {
+        this.tokenValidityDate = tokenRefreshDate;
     }
 
     public List<Product> getProducts() {
