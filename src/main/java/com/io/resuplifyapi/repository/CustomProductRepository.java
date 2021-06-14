@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface CustomProductRepository {
 
-    List<Product> findAllBySupplyCriteria(int shopId, LocalDate date);
+    List<Product> findAllByResupplyCriteria(int shopId, LocalDate date);
 }

@@ -68,8 +68,6 @@ public class Shop {
     }
 
     public String getToken() {
-
-        System.out.println(token);
         return token;
     }
 

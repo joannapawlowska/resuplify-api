@@ -36,7 +36,7 @@ public class ProductService{
         return productRepository.findById(id);
     }
 
-    public List<Product> findAllByResupplyCriteria(int shopId, LocalDate date) { return productRepository.findAllBySupplyCriteria(shopId, date); }
+    public List<Product> findAllByResupplyCriteria(int shopId, LocalDate date) { return productRepository.findAllByResupplyCriteria(shopId, date); }
 
     public void updatePrediction(Product product) { predictorService.updatePrediction(product); }
 }

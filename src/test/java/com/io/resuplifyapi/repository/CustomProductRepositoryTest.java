@@ -70,6 +70,6 @@ class CustomProductRepositoryTest {
     @Test
     public void shouldFindByShopIdAndPredictionActiveAndWarnLevelDateBeforeGivenDate(){
 
-        assertEquals(productRepository.findAllBySupplyCriteria(1, LocalDate.now()).size(), 2);
+        assertEquals(productRepository.findAllByResupplyCriteria(1, LocalDate.now()).size(), 2);
     }
 }

@@ -2,26 +2,26 @@ package com.io.resuplifyapi.domain;
 
 public class ResupplyProduct {
 
-    private int shoperId;
+    private int id;
     private String name;
     private int stockLevel;
     private int demand;
 
     public ResupplyProduct(){}
 
-    public ResupplyProduct(int shoperId, String name, int stockLevel, int demand) {
-        this.shoperId = shoperId;
+    public ResupplyProduct(int id, String name, int stockLevel, int demand) {
+        this.id = id;
         this.name = name;
         this.stockLevel = stockLevel;
         this.demand = demand;
     }
 
-    public int getShoperId() {
-        return shoperId;
+    public int getId() {
+        return id;
     }
 
-    public void setShoperId(int shoperId) {
-        this.shoperId = shoperId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
