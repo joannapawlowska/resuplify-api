@@ -1,6 +1,8 @@
 package com.io.resuplifyapi.service;
 
-import com.io.resuplifyapi.domain.*;
+import com.io.resuplifyapi.domain.Product;
+import com.io.resuplifyapi.domain.ResupplyProduct;
+import com.io.resuplifyapi.domain.Stock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

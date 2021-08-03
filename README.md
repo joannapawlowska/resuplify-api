@@ -4,7 +4,7 @@
 ## General information
 - Supports an entrepreneur in making decisions related to inventory management
 - An account on an e-commerce platform [_Shoper_](https://www.shoper.pl/) is required to use Resuplify API
-- Project for academic purpose
+- Project created for Bachelor's thesis
 
 
 ## Technologies used
